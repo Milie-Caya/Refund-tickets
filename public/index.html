@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Issue Refund Ticket</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Issue Refund Ticket</h1>
+  <div class="card">
+    <form id="issueForm">
+      <label>Employee ID</label>
+      <input name="employee_id" placeholder="Emp# 045" required>
+
+      <label>Cans (qty)</label>
+      <input name="cans_qty" type="number" min="0" value="0">
+      <label>Cans unit value</label>
+      <input name="cans_unit" type="number" step="0.01" value="0.10">
+
+      <label>Plastic bottles (qty)</label>
+      <input name="plastic_qty" type="number" min="0" value="0">
+      <label>Plastic unit value</label>
+      <input name="plastic_unit" type="number" step="0.01" value="0.20">
+
+      <label>Glass bottles (qty)</label>
+      <input name="glass_qty" type="number" min="0" value="0">
+      <label>Glass unit value</label>
+      <input name="glass_unit" type="number" step="0.01" value="0.25">
+
+      <label>Expires (days from now, optional)</label>
+      <input name="expires_days" type="number" min="0" value="90">
+
+      <button type="submit">Create Ticket</button>
+    </form>
+  </div>
+
+  <div class="card" id="result" style="display:none">
+    <h2>Ticket Issued</h2>
+    <div id="ticketInfo"></div>
+    <p>QR Code:</p>
+    <img id="qr" alt="QR code">
+    <p class="code" id="payload"></p>
+  </div>
+
+  <footer>Use a USB barcode/QR scanner or copy-paste the code into the Redeem page.</footer>
+
+<script>
+  const form = document.getElementById('issueForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const payload = {
+      employee_id: data.get('employee_id'),
+      items: [
+        { type: 'Cans', qty: parseInt(data.get('cans_qty')||'0'), unit: parseFloat(data.get('cans_unit')||'0') },
+        { type: 'Plastic bottles', qty: parseInt(data.get('plastic_qty')||'0'), unit: parseFloat(data.get('plastic_unit')||'0') },
+        { type: 'Glass bottles', qty: parseInt(data.get('glass_qty')||'0'), unit: parseFloat(data.get('glass_unit')||'0') }
+      ],
+      expires_days: parseInt(data.get('expires_days')||'0')
+    };
+    const res = await fetch('/api/tickets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    const result = document.getElementById('result');
+    result.style.display='block';
+    document.getElementById('ticketInfo').innerHTML = `
+      <div><strong>Ticket ID:</strong> ${json.id}</div>
+      <div><strong>Total:</strong> $${json.total_amount.toFixed(2)}</div>
+      <div><strong>Status:</strong> ${json.status}</div>
+    `;
+    document.getElementById('qr').src = '/api/qr/'+encodeURIComponent(json.id)+'.png';
+    document.getElementById('payload').innerText = json.payload;
+  });
+</script>
+</body>
+</html>
