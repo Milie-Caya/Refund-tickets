@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Refund Ticket - SuperC style</title>
+<style>
+  :root{ --w:280px; --pad:8px; --mono: "Courier New", monospace; }
+  body{ width:var(--w); margin:0; padding:0; font-family: Arial, sans-serif; color:#111; }
+  .ticket{ padding:var(--pad); box-sizing:border-box; font-size:12px; line-height:1.2; }
+  .header{ text-align:center; margin-bottom:6px; }
+  .logo{ max-width:120px; display:block; margin:0 auto 4px; }
+  .store{ font-weight:700; font-size:16px; letter-spacing:1px; }
+  .addr{ font-size:10px; color:#333; margin-top:2px; }
+  .meta{ font-size:10px; margin:6px 0; display:flex; justify-content:space-between; }
+  table{ width:100%; border-collapse:collapse; font-size:12px; margin-top:6px;}
+  th,td{ padding:4px 0; }
+  .right{ text-align:right; }
+  .total{ font-weight:700; font-size:14px; margin-top:6px; display:flex; justify-content:space-between; }
+  .qr{ text-align:center; margin-top:8px; }
+  .small{ font-size:9px; color:#444; text-align:center; margin-top:6px; }
+  .divider{ border-top:1px dashed #000; margin:8px 0; }
+</style>
+</head>
+<body>
+  <div class="ticket">
+    <div class="header">
+      <img class="logo" src="{{LOGO}}" alt="Store logo">
+      <div class="store">GREEN RETURNS — SUPER-STYLE</div>
+      <div class="addr">123 Rue Exemple, Terrebonne • Tél: (514) 000-0000</div>
+    </div>
+
+    <div class="meta">
+      <div>ID: <strong>{{ID}}</strong></div>
+      <div>Time: {{ISSUED}}</div>
+    </div>
+
+    <table>
+      <tr><th>Item</th><th class="right">Qty</th><th class="right">Unit</th><th class="right">Subtotal</th></tr>
+      {{ITEMS}}
+    </table>
+
+    <div class="divider"></div>
+
+    <div class="total"><div>TOTAL</div><div>${{TOTAL}}</div></div>
+
+    <div class="qr">
+      <img src="{{QR_URL}}" alt="QR" width="160" height="160">
+    </div>
+
+    <div class="small">
+      Redeemable at any cashier — Expires: {{EXPIRES}}. Validated by scan only. One-time use.
+    </div>
+  </div>
+</body>
+</html>
