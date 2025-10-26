@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redeem Refund Ticket</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Redeem Refund Ticket</h1>
+  <div class="card">
+    <p>Scan with a USB scanner or paste the code (format: <span class="code">TICKETID|ISO8601TS|h=HASH</span>)</p>
+    <label>Code</label>
+    <input id="code" placeholder="REF-20251026-000123|2025-10-26T13:42:00Z|h=...">
+    <button id="redeemBtn">Redeem</button>
+  </div>
+  <div class="card" id="result" style="display:none"></div>
+
+<script>
+  const input = document.getElementById('code');
+  const result = document.getElementById('result');
+  document.getElementById('redeemBtn').addEventListener('click', async () => {
+    const code = input.value.trim();
+    const res = await fetch('/api/redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const json = await res.json();
+    result.style.display='block';
+    result.innerHTML = '<pre>'+JSON.stringify(json, null, 2)+'</pre>';
+  });
+</script>
+</body>
+</html>
