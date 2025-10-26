@@ -1,0 +1,8 @@
+node_modules/
+.env
+data.db
+package-lock.json
+
+# mac/windows/dotfiles
+.DS_Store
+Thumbs.db
